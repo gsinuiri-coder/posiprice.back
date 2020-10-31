@@ -12,59 +12,30 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class VoteServiceImpl implements VoteService {
 
-
     @Autowired
-    private VoteRepository voteRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    VoteRepository voteRepository;
 
     @Autowired
     UserClient userClient;
 
     @Override
-    public Page<Vote> getAllVotesByUserId(Long userId, Pageable pageable) {
-        return voteRepository.findByUserId(userId, pageable);
+    public List<Vote> findVoteAll() {
+        return  voteRepository.findAll();
     }
+
 
     @Override
-    public Vote getVoteByIdAndUserId(Long userId, Long voteId) {
-        return voteRepository.findByIdAndUserId(voteId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Vote not found with Id " + voteId +
-                                " and UserId " + userId));
-    }
-    @Override
-    public Vote createVote(Long userId, Vote vote) {
+    public Vote createVote(Vote vote) {
+        Vote voteDB = new Vote();
 
-        return userClient.getUser(userId).map(user -> {
-            vote.setUser(user);
-            return voteRepository.save(vote);
-        }).orElseThrow(() -> new ResourceNotFoundException(
-                "User", "Id", userId));
+        voteDB = voteRepository.save(vote);
 
+        return voteDB;
     }
 
-    @Override
-    public Vote updateVote(Long userId, Long voteId, Vote voteDetails) {
-        if(!userRepository.existsById(userId))
-            throw new ResourceNotFoundException("User", "Id", userId);
-
-        return voteRepository.findById(voteId).map(vote -> {
-            vote.setVoteMinimun(voteDetails.getVoteMinimun());
-            return voteRepository.save(vote);
-        }).orElseThrow(() -> new ResourceNotFoundException("Vote", "Id", voteId));
-    }
-
-    @Override
-    public ResponseEntity<?> deleteVote(Long userId, Long voteId) {
-        return voteRepository.findByIdAndUserId(voteId, userId).map(vote -> {
-            voteRepository.delete(vote);
-            return ResponseEntity.ok().build();
-        }).orElseThrow(() -> new ResourceNotFoundException(
-                "Vote not found with Id " + voteId + " and UserId " + userId));
-    }
 }
