@@ -11,6 +11,7 @@ public class UserHystrixFallbackFactory implements UserClient{
     public ResponseEntity<User> getUser(long id) {
         User user = new User();
         user.setName("none");
+        user.setLastName("none");
         user.setTypeUser("none");
         return ResponseEntity.ok(user);
     }

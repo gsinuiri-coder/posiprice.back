@@ -13,9 +13,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableDiscoveryClient
-@EnableFeignClients
-@EnableHystrix
-@EnableHystrixDashboard
+//@EnableFeignClients
+//@EnableHystrix
+//@EnableHystrixDashboard
 public class CollectivityApplication {
 
     public static void main(String[] args) {

@@ -4,13 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+@Entity
+@Table(name = "votes")
 public class Vote extends AuditModel {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
     private Short voteMinimun;
@@ -33,13 +36,21 @@ public class Vote extends AuditModel {
         return this;
     }
 
-
     public Long getUserId() {
         return userId;
     }
 
     public Vote setUserId(Long userId) {
         this.userId = userId;
+        return this;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Vote setId(Long id) {
+        this.id = id;
         return this;
     }
 }
