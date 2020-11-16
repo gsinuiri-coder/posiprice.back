@@ -8,11 +8,11 @@
         <version>2.3.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.acme</groupId>
-    <artifactId>blogging</artifactId>
+    <groupId>com.silverfoxmedia</groupId>
+    <artifactId>collectivity</artifactId>
     <version>1.0</version>
-    <name>blogging</name>
-    <description>Blogging Application</description>
+    <name>collectivity</name>
+    <description>Collectivity Application</description>
 
     <properties>
         <java.version>14</java.version>
