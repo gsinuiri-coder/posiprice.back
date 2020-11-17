@@ -9,11 +9,11 @@ public class UserHystrixFallbackFactory implements UserClient{
 
     @Override
     public ResponseEntity<User> getUser(long id) {
-        User user = new User();
-        user.setName("none");
-        user.setLastName("none");
-        user.setTypeUser("none");
-
+        User user = User.builder()
+            .name("none")
+            .lastName("none")
+            .typeUser("none")
+            .build();
         return ResponseEntity.ok(user);
     }
 }

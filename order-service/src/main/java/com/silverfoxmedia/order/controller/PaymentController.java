@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Tag(name = "Payments", description = "Payments API")
 @RestController
 @RequestMapping("/api")
@@ -49,6 +51,8 @@ public class PaymentController {
 
     @GetMapping("/payments/{paymentId}")
     public PaymentResource getPaymentById(@PathVariable(value = "paymentId") Long paymentId) {
+
+
         return convertToResource(paymentService.getPaymentById(paymentId));
     }
 
