@@ -11,6 +11,6 @@ spring:
       client:
         url: http://localhost:8086
   datasource:
-    url: jdbc:mysql://localhost:3306/customersupport
+    url: jdbc:mysql://localhost:3306/customersupport-db
     username: root
     password: giansm1992

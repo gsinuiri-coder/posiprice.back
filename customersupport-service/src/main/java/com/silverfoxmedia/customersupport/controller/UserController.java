@@ -57,7 +57,6 @@ public class UserController {
             @Valid @RequestBody SaveUserResource resource) {
         User user = convertToEntity(resource);
         return convertToResource(userService.createUser(user));
-
     }
 
     @PutMapping("/users/{userId}")

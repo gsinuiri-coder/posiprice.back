@@ -41,7 +41,15 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment createPayment(Payment payment) {
-        return paymentRepository.save(payment);
+
+        User user = userClient.getUser(payment.getUserId()).getBody();
+
+        if (user.getId() != null){
+            payment.setUser(user);
+            return paymentRepository.save(payment);
+        }
+
+        return null;
     }
 
     @Override
@@ -49,9 +57,13 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Payment", "Id", paymentId));
-        return paymentRepository.save(
-                payment.setDescription(paymentRequest.getDescription())
-                        .setTotal(paymentRequest.getTotal()));
+
+        payment.setDescription(paymentRequest.getDescription());
+//        return paymentRepository.save(
+//                payment.setDescription(paymentRequest.getDescription())
+//                        .setTotal(paymentRequest.getTotal()));
+
+        return paymentRepository.save(payment);
     }
 
     @Override
