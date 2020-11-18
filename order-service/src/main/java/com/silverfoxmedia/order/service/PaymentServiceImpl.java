@@ -6,14 +6,12 @@ import com.silverfoxmedia.order.domain.model.User;
 import com.silverfoxmedia.order.domain.repository.PaymentRepository;
 import com.silverfoxmedia.order.domain.service.PaymentService;
 import com.silverfoxmedia.order.exception.ResourceNotFoundException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
@@ -43,7 +41,15 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment createPayment(Payment payment) {
-        return paymentRepository.save(payment);
+
+        User user = userClient.getUser(payment.getUserId()).getBody();
+
+        if (user.getId() != null){
+            payment.setUser(user);
+            return paymentRepository.save(payment);
+        }
+
+        return null;
     }
 
     @Override

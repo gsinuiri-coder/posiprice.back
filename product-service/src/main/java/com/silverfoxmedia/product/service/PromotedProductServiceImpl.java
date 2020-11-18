@@ -1,9 +1,7 @@
 package com.silverfoxmedia.product.service;
 
 import com.silverfoxmedia.product.domain.model.PromotedProduct;
-import com.silverfoxmedia.product.domain.model.PromotedProduct;
 import com.silverfoxmedia.product.domain.repository.CategoryRepository;
-import com.silverfoxmedia.product.domain.repository.PromotedProductRepository;
 import com.silverfoxmedia.product.domain.repository.PromotedProductRepository;
 import com.silverfoxmedia.product.domain.service.PromotedProductService;
 import com.silverfoxmedia.product.exception.ResourceNotFoundException;

@@ -1,7 +1,11 @@
 package com.silverfoxmedia.order.resource;
 
+import com.silverfoxmedia.order.domain.model.User;
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Lob;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 public class SavePaymentResource {
@@ -41,4 +45,7 @@ public class SavePaymentResource {
         this.total = total;
         return this;
     }
+
+//    @Transient
+//    private User user;
 }

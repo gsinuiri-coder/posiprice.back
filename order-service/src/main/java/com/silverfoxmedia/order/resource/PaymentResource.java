@@ -2,14 +2,15 @@ package com.silverfoxmedia.order.resource;
 
 import com.silverfoxmedia.order.domain.model.AuditModel;
 import com.silverfoxmedia.order.domain.model.User;
+import lombok.Data;
 
 public class PaymentResource extends AuditModel {
 
     private Long id;
     private String description;
+//    private Long userId;
     private User user;
     private Double total;
-
 
     public Long getId() {
         return id;

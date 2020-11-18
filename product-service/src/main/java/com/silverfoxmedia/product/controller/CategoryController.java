@@ -16,8 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;

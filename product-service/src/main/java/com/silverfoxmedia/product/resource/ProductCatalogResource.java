@@ -1,7 +1,5 @@
 package com.silverfoxmedia.product.resource;
 
-import com.silverfoxmedia.product.domain.model.Product;
-
 public class ProductCatalogResource extends ProductResource {
 
     private boolean isActive;

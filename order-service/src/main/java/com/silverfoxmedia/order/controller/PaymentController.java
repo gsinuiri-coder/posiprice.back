@@ -21,7 +21,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Tag(name = "Payments", description = "Payments API")
 @RestController
 @RequestMapping("/api")
@@ -51,8 +50,6 @@ public class PaymentController {
 
     @GetMapping("/payments/{paymentId}")
     public PaymentResource getPaymentById(@PathVariable(value = "paymentId") Long paymentId) {
-
-
         return convertToResource(paymentService.getPaymentById(paymentId));
     }
 
@@ -61,7 +58,6 @@ public class PaymentController {
             @Valid @RequestBody SavePaymentResource resource) {
         Payment payment = convertToEntity(resource);
         return convertToResource(paymentService.createPayment(payment));
-
     }
 
     @PutMapping("/payments/{paymentId}")
