@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -57,7 +58,6 @@ public class PaymentController {
             @Valid @RequestBody SavePaymentResource resource) {
         Payment payment = convertToEntity(resource);
         return convertToResource(paymentService.createPayment(payment));
-
     }
 
     @PutMapping("/payments/{paymentId}")

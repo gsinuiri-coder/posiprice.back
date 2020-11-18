@@ -1,9 +1,6 @@
 package com.silverfoxmedia.collectivity.domain.service;
 
 import com.silverfoxmedia.collectivity.domain.model.Vote;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

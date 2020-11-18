@@ -1,5 +1,7 @@
 package com.silverfoxmedia.order.domain.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -20,6 +22,9 @@ public class Payment extends AuditModel{
     @NotNull
     private Double total;
 
+    @Transient
+    private User user;
+
     public Long getId() {
         return id;
     }
@@ -28,10 +33,6 @@ public class Payment extends AuditModel{
         this.id = id;
         return this;
     }
-
-    @Transient
-    private User user;
-
 
     public String getDescription() {
         return description;

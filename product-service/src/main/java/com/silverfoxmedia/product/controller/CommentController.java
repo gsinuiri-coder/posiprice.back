@@ -1,60 +1,79 @@
 package com.silverfoxmedia.product.controller;
 
-import com.silverfoxmedia.product.entity.Product;
-import com.silverfoxmedia.product.entity.Comment;
-import com.silverfoxmedia.product.service.CommentService;
+import com.silverfoxmedia.product.domain.model.Comment;
+import com.silverfoxmedia.product.domain.service.CommentService;
+import com.silverfoxmedia.product.resource.CommentResource;
+import com.silverfoxmedia.product.resource.SaveCommentResource;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Tag(name = "Product Catalogs", description = "Product Catalogs API")
 @RestController
-@RequestMapping(value = "/comments")
+@RequestMapping("/api")
 public class CommentController {
-    
+
     @Autowired
-    private CommentService commentService ;
+    private CommentService commentService;
 
-    @GetMapping
-    public ResponseEntity<List<Comment>> listComment(@RequestParam(name = "productId", required = false) Long productId){
-        List<Comment> comments = new ArrayList<>();
-        if (null ==  productId){
-            comments = commentService.listAllComment();
-            if (comments.isEmpty()){
-                return ResponseEntity.noContent().build();
-            }
-        }else{
-            comments = commentService.findByProduct(Product.builder().id(productId).build());
-            if (comments.isEmpty()){
-                return ResponseEntity.notFound().build();
-            }
-        }
+    @Autowired
+    private ModelMapper mapper;
 
-
-        return ResponseEntity.ok(comments);
+    @GetMapping("/productCatalogs/{productCatalogId}/comments")
+    public Page<CommentResource> getAllCommentsByProductCatalogId(
+            @PathVariable (value = "productCatalogId") Long productCatalogId,
+            Pageable pageable) {
+        Page<Comment> commentPage = commentService.getAllCommentsByProductCatalogId(productCatalogId, pageable);
+        List<CommentResource> resources = commentPage.getContent().stream()
+                .map(this::convertToResource).collect(Collectors.toList());
+        return new PageImpl<>(resources, pageable, resources.size());
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<Comment> getComment(@PathVariable("id") Long id) {
-        Comment comment =  commentService.getComment(id);
-        if (null==comment){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(comment);
+    @GetMapping("/productCatalogs/{productCatalogId}/comments/{commentId}")
+    public CommentResource getCommentByIdAndProductCatalogId(
+            @PathVariable(name = "productCatalogId") Long productCatalogId,
+            @PathVariable(name = "commentId") Long commentId) {
+        return convertToResource(commentService.getCommentByIdAndProductCatalogId(productCatalogId, commentId));
     }
 
-//    @PostMapping
-//    public ResponseEntity<Comment> createComment(@Valid @RequestBody Comment comment, BindingResult result){
-//        if (result.hasErrors()){
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
-//        }
-//        Comment commentCreate =  commentService.createComment(comment);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(commentCreate);
-//    }
+    @PostMapping("/productCatalogs/{productCatalogId}/comments")
+    public CommentResource createComment(
+            @PathVariable(value = "productCatalogId") Long productCatalogId,
+            @Valid @RequestBody SaveCommentResource resource) {
+        return convertToResource(commentService.createComment(productCatalogId,
+                convertToEntity(resource)));
+    }
+
+    @PutMapping("/productCatalogs/{productCatalogId}/comments/{commentId}")
+    public CommentResource updateComment(
+            @PathVariable (value = "productCatalogId") Long productCatalogId,
+            @PathVariable (value = "commentId") Long commentId,
+            @Valid @RequestBody SaveCommentResource resource) {
+        return convertToResource(commentService.updateComment(productCatalogId, commentId,
+                convertToEntity(resource)));
+    }
+
+    @DeleteMapping("/productCatalogs/{productCatalogId}/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(
+            @PathVariable (value = "productCatalogId") Long productCatalogId,
+            @PathVariable (value = "commentId") Long commentId) {
+        return commentService.deleteComment(productCatalogId, commentId);
+    }
+
+    private Comment convertToEntity(SaveCommentResource resource) {
+        return mapper.map(resource, Comment.class);
+    }
+
+    private CommentResource convertToResource(Comment entity) {
+        return mapper.map(entity, CommentResource.class);
+    }
 }
