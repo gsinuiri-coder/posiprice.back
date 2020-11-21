@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface ProductCatalogService {
-    Page<ProductCatalog> getAllProductCatalogsByCategoryId(Long categoryId, Pageable pageable);
-    ProductCatalog getProductCatalogByIdAndCategoryId(Long categoryId, Long productCatalogId);
-    ProductCatalog createProductCatalog(Long categoryId, ProductCatalog productCatalog);
-    ProductCatalog updateProductCatalog(Long categoryId, Long productCatalogId, ProductCatalog productCatalogDetails);
-    ResponseEntity<?> deleteProductCatalog(Long categoryId, Long productCatalogId);
+    Page<ProductCatalog> getAllProductCatalogs(Pageable pageable);
+    ProductCatalog getProductCatalogById(Long productCatalogId);
+    ProductCatalog createProductCatalog(ProductCatalog productCatalog);
+    ProductCatalog updateProductCatalog(Long productCatalogId, ProductCatalog productCatalogRequest);
+    ResponseEntity<?> deleteProductCatalog(Long productCatalogId);
 }

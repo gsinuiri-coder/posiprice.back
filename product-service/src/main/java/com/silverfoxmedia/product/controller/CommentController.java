@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Tag(name = "Product Catalogs", description = "Product Catalogs API")
+@Tag(name = "Comments", description = "Comments API")
 @RestController
 @RequestMapping("/api")
 public class CommentController {

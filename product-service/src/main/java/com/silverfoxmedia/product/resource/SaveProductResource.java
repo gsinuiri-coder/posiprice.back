@@ -1,5 +1,6 @@
 package com.silverfoxmedia.product.resource;
 
+import javax.persistence.Column;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
@@ -13,6 +14,9 @@ public class SaveProductResource {
     private String description;
 
     private Double price;
+
+    @Column(name = "category_id")
+    private Long categoryId;
 
     public String getName() {
         return name;
@@ -38,6 +42,15 @@ public class SaveProductResource {
 
     public SaveProductResource setPrice(Double price) {
         this.price = price;
+        return this;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public SaveProductResource setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
         return this;
     }
 }

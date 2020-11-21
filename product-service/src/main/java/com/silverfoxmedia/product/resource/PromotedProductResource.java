@@ -2,14 +2,14 @@ package com.silverfoxmedia.product.resource;
 
 public class PromotedProductResource extends ProductResource{
 
-    private String status;
+    private String state;
 
-    public String getStatus() {
-        return status;
+    public String getState() {
+        return state;
     }
 
-    public PromotedProductResource setStatus(String status) {
-        this.status = status;
+    public PromotedProductResource setState(String state) {
+        this.state = state;
         return this;
     }
 }

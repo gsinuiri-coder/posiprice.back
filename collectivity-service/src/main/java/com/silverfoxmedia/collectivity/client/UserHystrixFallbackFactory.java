@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserHystrixFallbackFactory implements UserClient{
+public class UserHystrixFallbackFactory implements UserClient {
 
     @Override
     public ResponseEntity<User> getUser(long id) {

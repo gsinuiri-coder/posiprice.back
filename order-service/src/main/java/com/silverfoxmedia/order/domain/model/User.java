@@ -1,8 +1,5 @@
 package com.silverfoxmedia.order.domain.model;
 
-import lombok.Builder;
-import lombok.Data;
-
 public class User {
     private Long id;
     private String name;

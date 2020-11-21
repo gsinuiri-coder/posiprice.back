@@ -4,6 +4,9 @@ import com.silverfoxmedia.product.domain.model.ProductCatalog;
 import com.silverfoxmedia.product.domain.service.ProductCatalogService;
 import com.silverfoxmedia.product.resource.ProductCatalogResource;
 import com.silverfoxmedia.product.resource.SaveProductCatalogResource;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,51 +26,53 @@ import java.util.stream.Collectors;
 public class ProductCatalogController {
 
     @Autowired
-    private ProductCatalogService productCatalogService;
-
-    @Autowired
     private ModelMapper mapper;
 
-    @GetMapping("/categories/{categoryId}/productCatalogs")
-    public Page<ProductCatalogResource> getAllProductCatalogsByCategoryId(
-            @PathVariable(value = "categoryId") Long categoryId,
-            Pageable pageable) {
-        Page<ProductCatalog> productCatalogPage = productCatalogService.getAllProductCatalogsByCategoryId(categoryId, pageable);
-        List<ProductCatalogResource> resources = productCatalogPage.getContent().stream()
-                .map(this::convertToResource).collect(Collectors.toList());
+    @Autowired
+    private ProductCatalogService productCatalogService;
+
+    @Operation(summary = "Get All ProductCatalogs", description = "Get All available ProductCatalogs", responses = {
+            @ApiResponse(
+                    description = "All ProductCatalogs",
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping("/productCatalogs")
+    public Page<ProductCatalogResource> getAllProductCatalogs(Pageable pageable) {
+
+        Page<ProductCatalog> productCatalogsPage = productCatalogService.getAllProductCatalogs(pageable);
+        List<ProductCatalogResource> resources = productCatalogsPage.getContent()
+                .stream().map(this::convertToResource)
+                .collect(Collectors.toList());
         return new PageImpl<>(resources, pageable, resources.size());
     }
 
-    @GetMapping("/categories/{categoryId}/productCatalogs/{productCatalogId}")
-    public ProductCatalogResource getProductCatalogByIdAndCategoryId(
-            @PathVariable(name = "categoryId") Long categoryId,
-            @PathVariable(name = "productCatalogId") Long productCatalogId) {
-        return convertToResource(productCatalogService.getProductCatalogByIdAndCategoryId(categoryId, productCatalogId));
+    @GetMapping("/productCatalogs/{productCatalogId}")
+    public ProductCatalogResource getProductCatalogById(@PathVariable(value = "productCatalogId") Long productCatalogId) {
+        return convertToResource(productCatalogService.getProductCatalogById(productCatalogId));
     }
 
-    @PostMapping("/categories/{categoryId}/productCatalogs")
+    @PostMapping("/productCatalogs")
     public ProductCatalogResource createProductCatalog(
-            @PathVariable(value = "categoryId") Long categoryId,
             @Valid @RequestBody SaveProductCatalogResource resource) {
-        return convertToResource(productCatalogService.createProductCatalog(categoryId,
-                convertToEntity(resource)));
+        ProductCatalog productCatalog = convertToEntity(resource);
+        return convertToResource(productCatalogService.createProductCatalog(productCatalog));
+
     }
 
-    @PutMapping("/categories/{categoryId}/productCatalogs/{productCatalogId}")
-    public ProductCatalogResource updateProductCatalog(
-            @PathVariable (value = "categoryId") Long categoryId,
-            @PathVariable (value = "productCatalogId") Long productCatalogId,
-            @Valid @RequestBody SaveProductCatalogResource resource) {
-        return convertToResource(productCatalogService.updateProductCatalog(categoryId, productCatalogId,
-                convertToEntity(resource)));
+    @PutMapping("/productCatalogs/{productCatalogId}")
+    public ProductCatalogResource updateProductCatalog(@PathVariable Long productCatalogId,
+                                   @Valid @RequestBody SaveProductCatalogResource resource) {
+        ProductCatalog productCatalog = convertToEntity(resource);
+        return convertToResource(
+                productCatalogService.updateProductCatalog(productCatalogId, productCatalog));
     }
 
-    @DeleteMapping("/categories/{categoryId}/productCatalogs/{productCatalogId}")
-    public ResponseEntity<?> deleteProductCatalog(
-            @PathVariable (value = "categoryId") Long categoryId,
-            @PathVariable (value = "productCatalogId") Long productCatalogId) {
-        return productCatalogService.deleteProductCatalog(categoryId, productCatalogId);
+    @DeleteMapping("/productCatalogs/{productCatalogId}")
+    public ResponseEntity<?> deleteProductCatalog(@PathVariable Long productCatalogId) {
+        return productCatalogService.deleteProductCatalog(productCatalogId);
     }
+
 
     private ProductCatalog convertToEntity(SaveProductCatalogResource resource) {
         return mapper.map(resource, ProductCatalog.class);

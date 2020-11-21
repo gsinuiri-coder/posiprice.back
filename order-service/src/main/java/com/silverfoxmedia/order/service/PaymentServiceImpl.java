@@ -1,7 +1,9 @@
 package com.silverfoxmedia.order.service;
 
+import com.silverfoxmedia.order.client.ProductCatalogClient;
 import com.silverfoxmedia.order.client.UserClient;
 import com.silverfoxmedia.order.domain.model.Payment;
+import com.silverfoxmedia.order.domain.model.ProductCatalog;
 import com.silverfoxmedia.order.domain.model.User;
 import com.silverfoxmedia.order.domain.repository.PaymentRepository;
 import com.silverfoxmedia.order.domain.service.PaymentService;
@@ -21,6 +23,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     UserClient userClient;
 
+    @Autowired
+    ProductCatalogClient productCatalogClient;
+
     @Override
     public Page<Payment> getAllPayments(Pageable pageable) {
         return paymentRepository.findAll(pageable);
@@ -34,7 +39,10 @@ public class PaymentServiceImpl implements PaymentService {
                         "Payment", "Id", paymentId));
 
         User user = userClient.getUser(payment.getUserId()).getBody();
+        ProductCatalog productCatalog = productCatalogClient.getProductCatalog(payment.getProductCatalogId()).getBody();
+
         payment.setUser(user);
+        payment.setProductCatalog(productCatalog);
 
         return payment;
     }
@@ -43,9 +51,11 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment createPayment(Payment payment) {
 
         User user = userClient.getUser(payment.getUserId()).getBody();
+        ProductCatalog productCatalog = productCatalogClient.getProductCatalog(payment.getProductCatalogId()).getBody();
 
-        if (user.getId() != null){
+        if (user.getId() != null && productCatalog.getId() != null){
             payment.setUser(user);
+            payment.setProductCatalog(productCatalog);
             return paymentRepository.save(payment);
         }
 
