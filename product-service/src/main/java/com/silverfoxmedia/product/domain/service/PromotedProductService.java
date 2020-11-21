@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 
 public interface PromotedProductService {
 
-    Page<PromotedProduct> getAllPromotedProductsByCategoryId(Long categoryId, Pageable pageable);
-    PromotedProduct getPromotedProductByIdAndCategoryId(Long categoryId, Long productCatalogId);
-    PromotedProduct createPromotedProduct(Long categoryId, PromotedProduct productCatalog);
-    PromotedProduct updatePromotedProduct(Long categoryId, Long productCatalogId, PromotedProduct productCatalogDetails);
-    ResponseEntity<?> deletePromotedProduct(Long categoryId, Long productCatalogId);
+    Page<PromotedProduct> getAllPromotedProducts(Pageable pageable);
+    PromotedProduct getPromotedProductById(Long promotedProductId);
+    PromotedProduct createPromotedProduct(PromotedProduct promotedProduct);
+    PromotedProduct updatePromotedProduct(Long promotedProductId, PromotedProduct promotedProductRequest);
+    ResponseEntity<?> deletePromotedProduct(Long promotedProductId);
 }

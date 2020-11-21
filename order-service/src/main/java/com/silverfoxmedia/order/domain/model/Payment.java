@@ -1,7 +1,5 @@
 package com.silverfoxmedia.order.domain.model;
 
-import lombok.Data;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -16,14 +14,21 @@ public class Payment extends AuditModel{
     @Lob
     private String description;
 
-    @Column(name = "user_id")
-    private Long userId;
-
     @NotNull
     private Double total;
 
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "product_catalog_id")
+    private Long productCatalogId;
+
     @Transient
     private User user;
+
+    @Transient
+    private ProductCatalog productCatalog;
+
 
     public Long getId() {
         return id;
@@ -43,15 +48,6 @@ public class Payment extends AuditModel{
         return this;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public Payment setUserId(Long userId) {
-        this.userId = userId;
-        return this;
-    }
-
     public Double getTotal() {
         return total;
     }
@@ -61,12 +57,39 @@ public class Payment extends AuditModel{
         return this;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public Payment setUserId(Long userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public Long getProductCatalogId() {
+        return productCatalogId;
+    }
+
+    public Payment setProductCatalogId(Long productCatalogId) {
+        this.productCatalogId = productCatalogId;
+        return this;
+    }
+
     public User getUser() {
         return user;
     }
 
     public Payment setUser(User user) {
         this.user = user;
+        return this;
+    }
+
+    public ProductCatalog getProductCatalog() {
+        return productCatalog;
+    }
+
+    public Payment setProductCatalog(ProductCatalog productCatalog) {
+        this.productCatalog = productCatalog;
         return this;
     }
 }

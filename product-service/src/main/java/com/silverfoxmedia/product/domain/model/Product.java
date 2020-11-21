@@ -7,7 +7,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@MappedSuperclass
+//@MappedSuperclass
+@Entity
+@Table(name = "products")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Product extends AuditModel{
 
     @Id
@@ -23,10 +26,10 @@ public class Product extends AuditModel{
 
     private Double price;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    @Transient
     private Category category;
 
 
@@ -63,6 +66,15 @@ public class Product extends AuditModel{
 
     public Product setPrice(Double price) {
         this.price = price;
+        return this;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public Product setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
         return this;
     }
 

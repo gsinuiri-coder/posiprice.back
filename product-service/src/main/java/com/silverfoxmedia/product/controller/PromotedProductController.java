@@ -4,6 +4,9 @@ import com.silverfoxmedia.product.domain.model.PromotedProduct;
 import com.silverfoxmedia.product.domain.service.PromotedProductService;
 import com.silverfoxmedia.product.resource.PromotedProductResource;
 import com.silverfoxmedia.product.resource.SavePromotedProductResource;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,57 +20,59 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Tag(name = "Promote Products", description = "Promote Products API")
+@Tag(name = "Promoted Products", description = "Promoted Products API")
 @RestController
 @RequestMapping("/api")
 public class PromotedProductController {
 
     @Autowired
-    private PromotedProductService promotedProductService;
-
-    @Autowired
     private ModelMapper mapper;
 
-    @GetMapping("/categories/{categoryId}/promotedProducts")
-    public Page<PromotedProductResource> getAllPromotedProductsByCategoryId(
-            @PathVariable(value = "categoryId") Long categoryId,
-            Pageable pageable) {
-        Page<PromotedProduct> promotedProductPage = promotedProductService.getAllPromotedProductsByCategoryId(categoryId, pageable);
-        List<PromotedProductResource> resources = promotedProductPage.getContent().stream()
-                .map(this::convertToResource).collect(Collectors.toList());
+    @Autowired
+    private PromotedProductService promotedProductService;
+
+    @Operation(summary = "Get All PromotedProducts", description = "Get All available PromotedProducts", responses = {
+            @ApiResponse(
+                    description = "All PromotedProducts",
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping("/promotedProducts")
+    public Page<PromotedProductResource> getAllPromotedProducts(Pageable pageable) {
+
+        Page<PromotedProduct> promotedProductsPage = promotedProductService.getAllPromotedProducts(pageable);
+        List<PromotedProductResource> resources = promotedProductsPage.getContent()
+                .stream().map(this::convertToResource)
+                .collect(Collectors.toList());
         return new PageImpl<>(resources, pageable, resources.size());
     }
 
-    @GetMapping("/categories/{categoryId}/promotedProducts/{promotedProductId}")
-    public PromotedProductResource getPromotedProductByIdAndCategoryId(
-            @PathVariable(name = "categoryId") Long categoryId,
-            @PathVariable(name = "promotedProductId") Long promotedProductId) {
-        return convertToResource(promotedProductService.getPromotedProductByIdAndCategoryId(categoryId, promotedProductId));
+    @GetMapping("/promotedProducts/{promotedProductId}")
+    public PromotedProductResource getPromotedProductById(@PathVariable(value = "promotedProductId") Long promotedProductId) {
+        return convertToResource(promotedProductService.getPromotedProductById(promotedProductId));
     }
 
-    @PostMapping("/categories/{categoryId}/promotedProducts")
+    @PostMapping("/promotedProducts")
     public PromotedProductResource createPromotedProduct(
-            @PathVariable(value = "categoryId") Long categoryId,
             @Valid @RequestBody SavePromotedProductResource resource) {
-        return convertToResource(promotedProductService.createPromotedProduct(categoryId,
-                convertToEntity(resource)));
+        PromotedProduct promotedProduct = convertToEntity(resource);
+        return convertToResource(promotedProductService.createPromotedProduct(promotedProduct));
+
     }
 
-    @PutMapping("/categories/{categoryId}/promotedProducts/{promotedProductId}")
-    public PromotedProductResource updatePromotedProduct(
-            @PathVariable (value = "categoryId") Long categoryId,
-            @PathVariable (value = "promotedProductId") Long promotedProductId,
-            @Valid @RequestBody SavePromotedProductResource resource) {
-        return convertToResource(promotedProductService.updatePromotedProduct(categoryId, promotedProductId,
-                convertToEntity(resource)));
+    @PutMapping("/promotedProducts/{promotedProductId}")
+    public PromotedProductResource updatePromotedProduct(@PathVariable Long promotedProductId,
+                                                       @Valid @RequestBody SavePromotedProductResource resource) {
+        PromotedProduct promotedProduct = convertToEntity(resource);
+        return convertToResource(
+                promotedProductService.updatePromotedProduct(promotedProductId, promotedProduct));
     }
 
-    @DeleteMapping("/categories/{categoryId}/promotedProducts/{promotedProductId}")
-    public ResponseEntity<?> deletePromotedProduct(
-            @PathVariable (value = "categoryId") Long categoryId,
-            @PathVariable (value = "promotedProductId") Long promotedProductId) {
-        return promotedProductService.deletePromotedProduct(categoryId, promotedProductId);
+    @DeleteMapping("/promotedProducts/{promotedProductId}")
+    public ResponseEntity<?> deletePromotedProduct(@PathVariable Long promotedProductId) {
+        return promotedProductService.deletePromotedProduct(promotedProductId);
     }
+
 
     private PromotedProduct convertToEntity(SavePromotedProductResource resource) {
         return mapper.map(resource, PromotedProduct.class);

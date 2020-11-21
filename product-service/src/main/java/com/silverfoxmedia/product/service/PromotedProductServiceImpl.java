@@ -1,7 +1,6 @@
 package com.silverfoxmedia.product.service;
 
 import com.silverfoxmedia.product.domain.model.PromotedProduct;
-import com.silverfoxmedia.product.domain.repository.CategoryRepository;
 import com.silverfoxmedia.product.domain.repository.PromotedProductRepository;
 import com.silverfoxmedia.product.domain.service.PromotedProductService;
 import com.silverfoxmedia.product.exception.ResourceNotFoundException;
@@ -17,48 +16,42 @@ public class PromotedProductServiceImpl implements PromotedProductService {
     @Autowired
     private PromotedProductRepository promotedProductRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
-
     @Override
-    public Page<PromotedProduct> getAllPromotedProductsByCategoryId(Long categoryId, Pageable pageable) {
-        return promotedProductRepository.findByCategoryId(categoryId, pageable);
+    public Page<PromotedProduct> getAllPromotedProducts(Pageable pageable) {
+        return promotedProductRepository.findAll(pageable);
     }
 
     @Override
-    public PromotedProduct getPromotedProductByIdAndCategoryId(Long categoryId, Long promotedProductId) {
-        return promotedProductRepository.findByIdAndCategoryId(promotedProductId, categoryId)
+    public PromotedProduct getPromotedProductById(Long promotedProductId) {
+        return promotedProductRepository.findById(promotedProductId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "PromotedProduct not found with Id " + promotedProductId +
-                                " and CategoryId " + categoryId));
+                        "PromotedProduct", "Id", promotedProductId));
     }
 
     @Override
-    public PromotedProduct createPromotedProduct(Long categoryId, PromotedProduct promotedProduct) {
-        return categoryRepository.findById(categoryId).map(category -> {
-            promotedProduct.setCategory(category);
-            return promotedProductRepository.save(promotedProduct);
-        }).orElseThrow(() -> new ResourceNotFoundException(
-                "Category", "Id", categoryId));
+    public PromotedProduct createPromotedProduct(PromotedProduct promotedProduct) {
+
+
+        return promotedProductRepository.save(promotedProduct);
     }
 
     @Override
-    public PromotedProduct updatePromotedProduct(Long categoryId, Long promotedProductId, PromotedProduct promotedProductDetails) {
-        if(!categoryRepository.existsById(categoryId))
-            throw new ResourceNotFoundException("Category", "Id", categoryId);
+    public PromotedProduct updatePromotedProduct(Long promotedProductId, PromotedProduct promotedProductRequest) {
+        PromotedProduct promotedProduct = promotedProductRepository.findById(promotedProductId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "PromotedProduct", "Id", promotedProductId));
 
-        return promotedProductRepository.findById(promotedProductId).map(promotedProduct -> {
-            promotedProduct.setName(promotedProductDetails.getName());
-            return promotedProductRepository.save(promotedProduct);
-        }).orElseThrow(() -> new ResourceNotFoundException("PromotedProduct", "Id", promotedProductId));
+        promotedProduct.setName(promotedProductRequest.getName());
+
+        return promotedProductRepository.save(promotedProduct);
     }
 
     @Override
-    public ResponseEntity<?> deletePromotedProduct(Long categoryId, Long promotedProductId) {
-        return promotedProductRepository.findByIdAndCategoryId(promotedProductId, categoryId).map(promotedProduct -> {
-            promotedProductRepository.delete(promotedProduct);
-            return ResponseEntity.ok().build();
-        }).orElseThrow(() -> new ResourceNotFoundException(
-                "PromotedProduct not found with Id " + promotedProductId + " and CategoryId " + categoryId));
+    public ResponseEntity<?> deletePromotedProduct(Long promotedProductId) {
+        PromotedProduct promotedProduct = promotedProductRepository.findById(promotedProductId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "PromotedProduct", "Id", promotedProductId));
+        promotedProductRepository.delete(promotedProduct);
+        return ResponseEntity.ok().build();
     }
 }

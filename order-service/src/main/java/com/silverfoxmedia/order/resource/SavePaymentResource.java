@@ -1,11 +1,7 @@
 package com.silverfoxmedia.order.resource;
 
-import com.silverfoxmedia.order.domain.model.User;
-import lombok.Data;
-
 import javax.persistence.Column;
 import javax.persistence.Lob;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 public class SavePaymentResource {
@@ -13,11 +9,15 @@ public class SavePaymentResource {
     @Lob
     private String description;
 
+    @NotNull
+    private Double total;
+
     @Column(name = "user_id")
     private Long userId;
 
-    @NotNull
-    private Double total;
+    @Column(name = "product_catalog_id")
+    private Long productCatalogId;
+
 
     public String getDescription() {
         return description;
@@ -25,15 +25,6 @@ public class SavePaymentResource {
 
     public SavePaymentResource setDescription(String description) {
         this.description = description;
-        return this;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public SavePaymentResource setUserId(Long userId) {
-        this.userId = userId;
         return this;
     }
 
@@ -46,6 +37,21 @@ public class SavePaymentResource {
         return this;
     }
 
-//    @Transient
-//    private User user;
+    public Long getUserId() {
+        return userId;
+    }
+
+    public SavePaymentResource setUserId(Long userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public Long getProductCatalogId() {
+        return productCatalogId;
+    }
+
+    public SavePaymentResource setProductCatalogId(Long productCatalogId) {
+        this.productCatalogId = productCatalogId;
+        return this;
+    }
 }
